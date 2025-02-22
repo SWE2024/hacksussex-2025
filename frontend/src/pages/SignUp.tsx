@@ -71,6 +71,10 @@ const SignUp: React.FC = () => {
     fetchData();
   }, []);
 
+  const handleRedirectToLogin = () => {
+    navigate("/login"); // Redirect to login page
+  };
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
       <Typography variant="h4" gutterBottom>

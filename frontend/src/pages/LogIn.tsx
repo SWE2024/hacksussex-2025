@@ -7,9 +7,6 @@ interface User {
   password: string;
 }
 
-const universities = ["University of Sussex", "University of Oxford", "University of Cambridge", "Imperial College London"];
-const degreeTypes = ["BSc", "BA", "MSc", "MA", "PhD"];
-
 const LogIn: React.FC = () => {
   const [formData, setFormData] = useState<User>({
     email: "",
