@@ -23,10 +23,10 @@ const LogIn: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin= async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("User Data:", formData);
-    // Submit logic here
+    navigate("/dashboard");
   };
 
   return (
@@ -34,7 +34,7 @@ const LogIn: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Login
       </Typography>
-      <form onSubmit={handleSubmit} style={{ width: "300px" }}>
+      <form onSubmit={handleLogin} style={{ width: "300px" }}>
         <TextField
           label="Email"
           name="email"

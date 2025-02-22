@@ -3,12 +3,17 @@ import { CssBaseline } from "@mui/material";
 import SignUp from "./pages/SignUp";
 import PageNotFound from "./pages/PageNotFound";
 import LogIn from "./pages/LogIn";
+import { DashBoard } from "./pages/DashBoard";
+import { Navbar } from "./components/NavBar";
+import { Calculator } from "./pages/Calculator";
+import { Analytics } from "./pages/Analytics";
 
 function Layout() {
 
   return (
     <>
       <CssBaseline />
+      <Navbar/>
       <Outlet />
     </>
   );
@@ -24,7 +29,9 @@ function App() {
       {/* Protected Routes */}
       <Route element={<Layout />}>
         {/*<Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Login />} />*/}
-
+        <Route path="/dashboard" element={ <DashBoard/>} />
+        <Route path="/calculator" element={ <Calculator/>} />
+        <Route path="/analytics" element={ <Analytics/>} />
       </Route>
 
       {/* Catch-all route for undefined paths */}
@@ -36,6 +43,7 @@ function App() {
 export default function AppWrapper() {
   return (
     <Router>
+      
       <App />
     </Router>
   );
