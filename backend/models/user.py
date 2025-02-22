@@ -12,7 +12,3 @@ class User(SQLModel, table=True):
     password: str
     university_id: int = Field(foreign_key="university.id") 
     degree_id: int = Field(foreign_key="degree.id")
-
-
-
-

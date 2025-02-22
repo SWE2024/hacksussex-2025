@@ -1,18 +1,18 @@
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from models import University, Degree, Year, Module, Assignment, User
 from pydantic import BaseModel
 from sqlmodel import Field, Session, SQLModel, create_engine, select
+from startup import init
 from typing import Annotated, Union
-from models import University, Degree, Year, Module, Assignment, User
 
+import bcrypt
 import re
 
 
 from startup import init
-
-
-
 
 
 sqlite_file_name = "database.db"
@@ -30,6 +30,15 @@ def get_session():
         yield session
 
 
+def hash_password(password: str) -> str:
+    password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    return password_hash.decode()
+
+
+def verify_password(password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed_password.encode())
+
+
 SessionDeep = Annotated[Session, Depends(get_session)]
 
 
@@ -37,7 +46,6 @@ SessionDeep = Annotated[Session, Depends(get_session)]
 async def lifespan(app: FastAPI):
     create_db_and_tables()
     init(engine)
-    print("finished init")
     yield
 
 
@@ -66,18 +74,6 @@ type_list = type_file.readlines()
 type_list = [line.strip() for line in type_list] # remove the whitespace and newlines
 
 
-
-    
-
-
-
-# @app.on_event("startup")
-# def on_startup():
-#     create_db_and_tables()
-
-
-
-
 @app.get("/")
 def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
@@ -90,50 +86,72 @@ def create_register_page():
 
 @app.post("/register")
 def register(session: SessionDeep, fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
-    print(fullname, email, password, uni, degreeType, degreeTitle)
+    statement = select(User).where(User.email == email)
+    user = session.exec(statement).first()
+    if user == None:
+        
+        legal_input = True
 
-    legal_input = True
+        # sanitise full name
+        fullname = fullname.strip()
+        fullname = re.sub(r"[^a-zA-Z\s'-]", "", fullname)
+        fullname = re.sub(r"[\s-]+", " ", fullname)
+        fullname = fullname.title()
 
-    # sanitise full name
-    fullname = fullname.strip()
-    fullname = re.sub(r"[^a-zA-Z\s'-]", "", fullname)
-    fullname = re.sub(r"[\s-]+", " ", fullname)
-    fullname = fullname.title()
+        # sanitise email
+        email = email.strip()
+        if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+            legal_input = False
+        
+        # sanitise password
+        password = password.strip()
+        if len(password) < 8 or len(password) > 20: # check length
+            legal_input = False
+        if not re.search(r'[a-zA-Z0-9]', password): # check for alnum
+            legal_input = False
+        if not re.search(r'[^a-zA-Z0-9]', password): # check for special char
+            legal_input = False
 
-    # sanitise email
-    email = email.strip()
-    if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
-        legal_input = False
-    
-    # sanitise password
-    password = password.strip()
-    if len(password) < 8 or len(password) > 20: # check length
-        legal_input = False
-    if not re.search(r'[a-zA-Z0-9]', password): # check for alnum
-        legal_input = False
-    if not re.search(r'[^a-zA-Z0-9]', password): # check for special char
-        legal_input = False
+        uni = uni.strip()
+        if len(uni) < 1 or len(uni) > 50:
+            legal_input = False
+        
+        degreeType = degreeType.strip()
+        if len(degreeType) < 1 or len(degreeType) > 50:
+            legal_input = False
 
-    uni = uni.strip()
-    if len(uni) < 1 or len(uni) > 50:
-        legal_input = False
-    
-    degreeType = degreeType.strip()
-    if len(degreeType) < 1 or len(degreeType) > 50:
-        legal_input = False
+        degreeTitle = degreeTitle.strip()
+        if len(degreeTitle) < 1 or len(degreeTitle) > 50:
+            legal_input = False
 
-    degreeTitle = degreeTitle.strip()
-    if len(degreeTitle) < 1 or len(degreeTitle) > 50:
-        legal_input = False
+        try:
+            if (legal_input):
+                # hash user password
+                hashed_password = hash_password(password)
 
-    try:
-        if (legal_input):
-            # add user to db
+                # get university and degree ids
+                statement = select(University).where(University.name == uni)
+                university = session.exec(statement).first()
+                if university == None:
+                    raise HTTPException(status_code=401, detail="University does not exist")
 
-            # send the user a success code
-            raise HTTPException(status_code=201, detail="User registered successfully")
-        else:
-            raise HTTPException(status_code=401, detail="Form entered incorrectly")
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=401, detail="Unexpected error occurred")
+                statement = select(Degree).where(Degree.title == degreeTitle and Degree.type == degreeType)
+                degree = session.exec(statement).first()
+                if degree == None:
+                    degree = Degree(title=degreeTitle, type=degreeType)
+                    session.add(degree)
+                    session.flush()
+                
+                degree = session.exec(statement).first()
+
+                # add user to db
+                user = User(name=fullname, email=email, password=hashed_password, university_id=university.id, degree_id=degree.id)
+                session.add(user)
+                session.commit()
+
+                # send the user a success code
+                return JSONResponse(content={"message": "success"}, status_code=201)
+            else:
+                raise HTTPException(status_code=401, detail="Form entered incorrectly")
+        except Exception:
+            raise HTTPException(status_code=400, detail="Unexpected error occurred")
