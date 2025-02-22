@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import GradeAvg from "../components/GradeAvg";
+import GradeAvg from "../components/HomeGradeAvg";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();

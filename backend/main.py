@@ -13,13 +13,6 @@ import database
 
 from startup import init, set_university_global
 
-
-
-
-
-
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     database.create_db_and_tables()
@@ -45,12 +38,9 @@ app.add_middleware(
 )
 
 
-
-
 @app.get("/")
 def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
 
-
-
+    
 app.include_router(auth_routes)

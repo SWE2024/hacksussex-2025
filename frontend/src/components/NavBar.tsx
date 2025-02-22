@@ -10,8 +10,7 @@ import {
 } from "@mui/material";
 import Menu from '@mui/material/Menu';
 import { Link, useNavigate } from "react-router-dom";
-import {Dashboard, Work, Logout, Grading, ShowChart, Settings} from '@mui/icons-material';
-import { blue, red } from "@mui/material/colors";
+import {Dashboard, Work, Logout, ShowChart, Settings} from '@mui/icons-material';
 
 
 export const Navbar: React.FC = () => {
@@ -43,10 +42,6 @@ export const Navbar: React.FC = () => {
           <Button color="inherit" component={Link} to="/analytics" sx={{marginRight: 2}}>
             <ShowChart sx={{ marginRight: 1 }} />
             Analytics
-          </Button>
-          <Button color="inherit" component={Link} to="/calculator" sx={{marginRight: 2}}>
-            <Grading sx={{ marginRight: 1 }} />
-            Grade Calculator
           </Button>
         </Box>
         <Button color="inherit" onClick={handleLogout} sx={{marginRight: 2}}>

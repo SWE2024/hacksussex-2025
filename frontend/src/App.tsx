@@ -5,9 +5,9 @@ import PageNotFound from "./pages/PageNotFound";
 import Login from "./pages/Login";
 import { DashBoard } from "./pages/DashBoard";
 import { Navbar } from "./components/NavBar";
-import { Calculator } from "./pages/Calculator";
 import { Analytics } from "./pages/Analytics";
 import HomePage from "./pages/Home";
+import ModulePage from "./pages/ModulePage";
 
 function Layout() {
 
@@ -33,8 +33,8 @@ function App() {
       <Route element={<Layout />}>
         {/*<Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Login />} />*/}
         <Route path="/dashboard" element={ <DashBoard/>} />
-        <Route path="/calculator" element={ <Calculator/>} />
         <Route path="/analytics" element={ <Analytics/>} />
+        <Route path="/module/:moduleName" element={<ModulePage />} />
         
       </Route>
 

@@ -1,8 +1,6 @@
-import React, {useState} from "react";
-import { Box, Button,Typography, List, ListItem, ListItemText, IconButton, ButtonBase } from "@mui/material";
+import React from "react";
+import { Box, Button,Typography, List, ListItem, ListItemText, IconButton } from "@mui/material";
 import {Add} from "@mui/icons-material";
-import CreateModule from "./CreateModule";
-import { useNavigate } from "react-router-dom";
 
 interface Module {
   name: string;
@@ -16,7 +14,7 @@ const modules: Module[] = [
   { name: "Compilers", grade: null, credit: 10 },
 ];
 
-const GradeAvg: React.FC = () => {
+const HomeGradeAvg: React.FC = () => {
   const calculateWeightedAverage = (modules: Module[]) => {
     const validModules = modules.filter(module => module.grade !== null);
     
@@ -34,18 +32,8 @@ const GradeAvg: React.FC = () => {
     return { weightedAverage, achievedPercentage, lostPercentage, remainingPercentage };
   };
 
-  const [openCreateModule, setOpenCreateModule] = useState(false);
-
   const { weightedAverage, achievedPercentage, lostPercentage, remainingPercentage } = calculateWeightedAverage(modules);
 
-  const [selectedModule, setSelectedModule] = useState<Module | null>(null);
-
-  const navigate = useNavigate();
-
-  const handleModuleClick = (module: Module) => {
-    console.log("Navigating to:", module.name);
-    navigate(`/module/${encodeURIComponent(module.name)}`, { state: { module } }); // ✅ Navigate correctly
-  };
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" height="60vh" padding={3} borderRadius={5} border={1}>
 
@@ -71,16 +59,9 @@ const GradeAvg: React.FC = () => {
           <Typography variant="h5" gutterBottom>
           Weighted Average: {weightedAverage.toFixed(2)}
           </Typography>
-          <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Add />}
-              onClick={() => {
-                console.log("Opening CreateModule...");
-                setOpenCreateModule(true);
-              }}            >
-              Add Module
-            </Button>
+          <IconButton color="primary">
+            <Add/>
+          </IconButton>
         </Box>
         {/* Stacked Progress Bar */}
         <Box sx={{ width: "100%", height: 25, borderRadius: 5, overflow: "hidden", display: "flex", mt: 2 }}>
@@ -101,28 +82,20 @@ const GradeAvg: React.FC = () => {
 
       <List sx={{ width: "100%" }}>
         {modules.map((module) => (
-          <ButtonBase key={module.name} onClick={() => handleModuleClick(module)} sx={{ width: "100%", textAlign: "left" }}>
-            <ListItem sx={{ marginBottom: 1, display: 'flex', justifyContent: "space-between", paddingX: 2 }}>
-              <Box>
-                <ListItemText primary={module.name} />
-                <ListItemText primary={`Credits: ${module.credit}`} />
-              </Box>
-              <ListItemText 
-                primary={module.grade !== null ? `Grade: ${module.grade}` : "Not Marked"} 
-                sx={{ flex: 1, textAlign: 'right', fontStyle: module.grade === null ? 'italic' : 'normal' }} 
-              />
-            </ListItem>
-          </ButtonBase>
+          <ListItem key={module.name} sx={{ marginBottom: 1, display: 'flex', justifyContent: "space-between", paddingX: 2 }}>
+            <Box>
+              <ListItemText primary={module.name} />
+              <ListItemText primary={`Credits: ${module.credit}`} />
+            </Box>
+            <ListItemText 
+              primary={module.grade !== null ? `Grade: ${module.grade}` : "Not Marked"} 
+              sx={{ flex: 1, textAlign: 'right', fontStyle: module.grade === null ? 'italic' : 'normal' }} 
+            />
+          </ListItem>
         ))}
       </List>
-
-      <CreateModule
-        open={openCreateModule}
-        onClose={() => setOpenCreateModule(false)}
-        onSubmit={()=>{}}
-      />
     </Box>
   );
 };
 
-export default GradeAvg;
+export default HomeGradeAvg;

@@ -13,7 +13,7 @@ export const DashBoard = () =>{
           <Grid item xs={12} md={6}>
             <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
               <Box display="flex" justifyContent="space-between" width="100%">
-                <Grid item xs={12} md={6} xl={12} alignContent={"center"} padding={5}>
+                <Grid item xs={12} md={6} lg={12} alignContent={"center"} padding={5}>
                     <GradeAvg/>
                 </Grid>
               </Box>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
 import AlertCard from "../components/AlertCard";
+import axios from "../api/axios";
 
 interface User {
   email: string;
@@ -25,8 +26,29 @@ const Login: React.FC = () => {
 
   const handleLogin= async (e: React.FormEvent) => {
     e.preventDefault();
+    const data = new FormData();
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    try {
+      const response = await axios.post("/login", data);
+      console.log("Data:", data)
+      console.log("Response:", response.data);
+      const successMessage = response.data.detail || "Login successfully";
+      setAlertMessage(successMessage);
+      setAlertType("success");
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.detail
+        error.response?.data?.message
+        error.message || // Fallback to Axios error message
+        "An unexpected error occurred"; // Default message
+
+      setAlertMessage(errorMessage);
+      setAlertType("error");
+      console.error("Error during Login", error);
+    }
   };
 
   return (
