@@ -12,7 +12,7 @@ interface User {
   degreeTitle: string;
 }
 
-const SignUp: React.FC = () => {
+const Register: React.FC = () => {
   const [formData, setFormData] = useState<User>({
     fullname: "",
     email: "",
@@ -46,9 +46,12 @@ const SignUp: React.FC = () => {
     data.append("degreeTitle", formData.degreeTitle);
 
     try {
-      const response = await axios.post("/signup", data);
+      const response = await axios.post("/register", data);
       console.log("Response:", response.data);
-      navigate("/login");
+
+      // handle the response, get the user id, username here
+
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error during sign-up:", error);
       setError("Failed to sign up. Please try again later.");
@@ -58,10 +61,10 @@ const SignUp: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const signup = await axios.get("signup/");
-        console.log("Response:", signup.data);
-        setUniversities(signup.data.universities);
-        setDegreeTypes(signup.data.types);
+        const Register = await axios.get("/register");
+        console.log("Response:", Register.data);
+        setUniversities(Register.data.universities);
+        setDegreeTypes(Register.data.types);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Failed to load data. Please try again later.");
@@ -70,10 +73,6 @@ const SignUp: React.FC = () => {
 
     fetchData();
   }, []);
-
-  const handleRedirectToLogin = () => {
-    navigate("/login"); // Redirect to login page
-  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
@@ -153,7 +152,7 @@ const SignUp: React.FC = () => {
             fullWidth 
             variant="contained" 
             color="primary" 
-            onClick={handleLogin}
+            onClick={()=>{navigate("/login")}} 
             sx={{ flex: 1 }}>
             LOGIN
           </Button>
@@ -163,4 +162,4 @@ const SignUp: React.FC = () => {
   );
 };
 
-export default SignUp;
+export default Register;

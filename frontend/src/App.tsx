@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
-import SignUp from "./pages/SignUp";
+import Register from "./pages/Register";
 import PageNotFound from "./pages/PageNotFound";
-import LogIn from "./pages/LogIn";
+import Login from "./pages/Login";
 import { DashBoard } from "./pages/DashBoard";
 import { Navbar } from "./components/NavBar";
 import { Calculator } from "./pages/Calculator";
@@ -24,8 +24,8 @@ function App() {
   return (
     <Routes>
 
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<LogIn />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={ <HomePage/>} />
       
 

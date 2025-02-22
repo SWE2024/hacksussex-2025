@@ -7,7 +7,7 @@ interface User {
   password: string;
 }
 
-const LogIn: React.FC = () => {
+const Login: React.FC = () => {
   const [formData, setFormData] = useState<User>({
     email: "",
     password: ""
@@ -26,7 +26,7 @@ const LogIn: React.FC = () => {
   };
   const handleRegister= async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/signup");
+    navigate("/register");
   };
 
 
@@ -75,4 +75,4 @@ const LogIn: React.FC = () => {
   );
 };
 
-export default LogIn;
+export default Login;

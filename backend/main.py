@@ -62,12 +62,15 @@ def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
 
 
-@app.get("/signup")
-def create_register():
+@app.get("/register")
+def create_register_page():
     return { "universities":university_list, "types":type_list }
 
 
-@app.post("/signup")
+@app.post("/register")
 def register(fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
     print(fullname, email, password, uni, degreeType, degreeTitle)
-    raise HTTPException(status_code=201, detail="Not implemented yet")
+    if (False):
+        raise HTTPException(status_code=201, detail="Not implemented yet")
+    else:
+        raise HTTPException(status_code=401, detail="Not implemented yet")
