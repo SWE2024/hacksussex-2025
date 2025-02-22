@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button, TextField, Autocomplete } from "@mui/material";
+import AlertCard from '../components/AlertCard'
+
 import axios from '../api/axios';
 
 interface User {
@@ -23,16 +25,13 @@ const Register: React.FC = () => {
   });
   const [universities, setUniversities] = useState<string[]>([]);
   const [degreeTypes, setDegreeTypes] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'error'>('error');
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-    const handleLogin= async (e: React.FormEvent) => {
-      e.preventDefault();
-      navigate("/login");
-    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,26 +47,41 @@ const Register: React.FC = () => {
     try {
       const response = await axios.post("/register", data);
       console.log("Response:", response.data);
-
+      const successMessage = response.data.detail || "Resigtered successfully";
+      setAlertMessage(successMessage);
+      setAlertType("success");
       // handle the response, get the user id, username here
 
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.detail
+        error.response?.data?.message
+        error.message || // Fallback to Axios error message
+        "An unexpected error occurred"; // Default message
+
+      setAlertMessage(errorMessage);
+      setAlertType("error");
       console.error("Error during sign-up:", error);
-      setError("Failed to sign up. Please try again later.");
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const Register = await axios.get("/register");
-        console.log("Response:", Register.data);
-        setUniversities(Register.data.universities);
-        setDegreeTypes(Register.data.types);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("Failed to load data. Please try again later.");
+        const register = await axios.get("/register");
+        console.log("Response:", register.data);
+        setUniversities(register.data.universities);
+        setDegreeTypes(register.data.types);
+      } catch (error:any) {
+        const errorMessage =
+          error.response?.data?.detail
+          error.response?.data?.message
+          error.message || // Fallback to Axios error message
+          "An unexpected error occurred"; // Default message
+
+        setAlertMessage(errorMessage);
+        setAlertType("error");
       }
     };
 
@@ -158,6 +172,9 @@ const Register: React.FC = () => {
           </Button>
         </Box>
       </form>
+
+      <AlertCard message={alertMessage} onClose={()=>setAlertMessage(null)} type={alertType} />
+
     </Box>
   );
 };
