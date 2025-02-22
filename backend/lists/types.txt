@@ -1,0 +1,6 @@
+Bachelor of Arts (BA)
+Bachelor of Science (BSc)
+Bachelor of Education (BEd)
+Bachelor of Engineering (BEng)
+Bachelor of Laws (LLB)
+Bachelor of Medicine, Bachelor of Surgery (MB ChB)
