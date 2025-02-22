@@ -84,6 +84,9 @@ def login(session: SessionDeep, email: str = Form(...), password: str = Form(...
     if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
         raise HTTPException(status_code=401, detail="Incorrect login")
     
+    if len(password) < 8 or len(password) > 20:
+        raise HTTPException(status_code=401, detail="Incorrect login")
+    
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
     if user == None:
