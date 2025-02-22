@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -5,9 +6,6 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Annotated, Union
 
 from models import University, Degree, Year, Module, Assignment, User
-
-
-app = FastAPI()
 
 
 sqlite_file_name = "database.db"
@@ -28,9 +26,14 @@ def get_session():
 SessionDep = Annotated[Session, Depends(get_session)]
 
 
-@app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     create_db_and_tables()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
 
 origins = [
     "http://localhost:5173",
