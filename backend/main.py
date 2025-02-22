@@ -1,6 +1,6 @@
 from typing import Union
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Form, HTTPException, Response
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,5 +38,6 @@ def create_register():
 
 
 @app.post("/signup")
-def register():
-    raise HTTPException(status_code=201, detail="Not implemented")
+def register(fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
+    print(fullname, email, password, uni, degreeType, degreeTitle)
+    raise HTTPException(status_code=201, detail="Not implemented yet")
