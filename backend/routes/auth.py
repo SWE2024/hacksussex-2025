@@ -8,7 +8,27 @@ import database
 from utils import hash_password, verify_password
 from models import University, Degree, User
 
+
 router = APIRouter(prefix="", tags=["Users"])
+
+
+@router.post("/login")
+def login(session: database.SessionDeP, email: str = Form(...), password: str = Form(...)):
+    if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+        raise HTTPException(status_code=401, detail="Incorrect login")
+    
+    if len(password) < 8 or len(password) > 20:
+        raise HTTPException(status_code=401, detail="Incorrect login")
+    
+    statement = select(User).where(User.email == email)
+    user = session.exec(statement).first()
+    if user == None:
+        raise HTTPException(status_code=401, detail="Account not found")
+    
+    if verify_password(password, user.password):
+        return JSONResponse(content={"message": "success"}, status_code=201)
+    else:
+        raise HTTPException(status_code=401, detail="Incorrect login")
 
 
 @router.get("/register")
