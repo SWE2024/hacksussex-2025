@@ -1,14 +1,20 @@
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
-import SignUp from "./pages/SignUp";
+import Register from "./pages/Register";
 import PageNotFound from "./pages/PageNotFound";
-import LogIn from "./pages/LogIn";
+import Login from "./pages/Login";
+import { DashBoard } from "./pages/DashBoard";
+import { Navbar } from "./components/NavBar";
+import { Analytics } from "./pages/Analytics";
+import HomePage from "./pages/Home";
+import ModulePage from "./pages/ModulePage";
 
 function Layout() {
 
   return (
     <>
       <CssBaseline />
+      <Navbar/>
       <Outlet />
     </>
   );
@@ -18,16 +24,22 @@ function App() {
   return (
     <Routes>
 
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<LogIn />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={ <HomePage/>} />
+      
 
       {/* Protected Routes */}
       <Route element={<Layout />}>
         {/*<Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Login />} />*/}
-
+        <Route path="/dashboard" element={ <DashBoard/>} />
+        <Route path="/analytics" element={ <Analytics/>} />
+        <Route path="/module/:moduleName" element={<ModulePage />} />
+        
       </Route>
 
       {/* Catch-all route for undefined paths */}
+      
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
@@ -36,6 +48,7 @@ function App() {
 export default function AppWrapper() {
   return (
     <Router>
+      
       <App />
     </Router>
   );

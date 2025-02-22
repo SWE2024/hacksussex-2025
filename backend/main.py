@@ -1,30 +1,46 @@
-from typing import Union
-
-from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
+from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from models import University, Degree, Year, Module, Assignment, User
 from pydantic import BaseModel
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from startup import init
+from typing import Annotated, Union
+from routes.auth import router as auth_routes
 
-app = FastAPI()
+import database
+
+from startup import init, set_university_global
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    database.create_db_and_tables()
+    init(database.engine)
+    set_university_global(app)
+    yield
 
 
-university_file = open('./lists/universities.txt', 'r')
-university_list = university_file.readlines()
-university_list = [line.strip() for line in university_list] # remove the whitespace and newlines
+app = FastAPI(lifespan=lifespan)
 
-type_file = open('./lists/types.txt', 'r')
-type_list = type_file.readlines()
-type_list = [line.strip() for line in type_list] # remove the whitespace and newlines
+
+origins = [
+    "http://localhost:5173",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")
 def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
 
-
-@app.get("/signup")
-def create_register():
-    return { "universities":university_list, "types":type_list }
-
-
-@app.post("/signup")
-def register():
-    raise HTTPException(status_code=201, detail="Not implemented")
+    
+app.include_router(auth_routes)
