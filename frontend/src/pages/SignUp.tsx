@@ -67,6 +67,10 @@ const SignUp: React.FC = () => {
     fetchData();
   }, []);
 
+  const handleRedirectToLogin = () => {
+    navigate("/login"); // Redirect to login page
+  };
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
       <Typography variant="h4" gutterBottom>
@@ -144,8 +148,10 @@ const SignUp: React.FC = () => {
             type="button" 
             fullWidth 
             variant="contained" 
-            color="secondary" 
-            sx={{ flex: 1 }}>
+            color="primary" 
+            sx={{ flex: 1 }}
+            onClick={handleRedirectToLogin}
+            >
             To Login
           </Button>
         </Box>

@@ -7,6 +7,7 @@ import { DashBoard } from "./pages/DashBoard";
 import { Navbar } from "./components/NavBar";
 import { Calculator } from "./pages/Calculator";
 import { Analytics } from "./pages/Analytics";
+import HomePage from "./pages/Home";
 
 function Layout() {
 
@@ -25,6 +26,8 @@ function App() {
 
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<LogIn />} />
+      <Route path="/" element={ <HomePage/>} />
+      
 
       {/* Protected Routes */}
       <Route element={<Layout />}>
@@ -32,9 +35,11 @@ function App() {
         <Route path="/dashboard" element={ <DashBoard/>} />
         <Route path="/calculator" element={ <Calculator/>} />
         <Route path="/analytics" element={ <Analytics/>} />
+        
       </Route>
 
       {/* Catch-all route for undefined paths */}
+      
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
