@@ -29,6 +29,10 @@ const SignUp: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+    const handleLogin= async (e: React.FormEvent) => {
+      e.preventDefault();
+      navigate("/login");
+    };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,15 +142,16 @@ const SignUp: React.FC = () => {
         />
         <Box display="flex" justifyContent="space-between" width="100%">
           <Button type="submit" fullWidth variant="contained" color="primary" sx={{ flex: 1, mr: 1 }}>
-            Sign Up
+            REGISTER
           </Button>
           <Button 
             type="button" 
             fullWidth 
             variant="contained" 
-            color="secondary" 
+            color="primary" 
+            onClick={handleLogin}
             sx={{ flex: 1 }}>
-            To Login
+            LOGIN
           </Button>
         </Box>
       </form>
