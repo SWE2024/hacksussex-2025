@@ -8,6 +8,12 @@ from typing import Annotated, Union
 from models import University, Degree, Year, Module, Assignment, User
 
 
+from startup import init
+
+
+
+
+
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 connect_args = {"check_same_thread": False}
@@ -23,12 +29,14 @@ def get_session():
         yield session
 
 
-SessionDep = Annotated[Session, Depends(get_session)]
+SessionDeep = Annotated[Session, Depends(get_session)]
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
+    init(engine)
+    print("finished init")
     yield
 
 
@@ -57,6 +65,18 @@ type_list = type_file.readlines()
 type_list = [line.strip() for line in type_list] # remove the whitespace and newlines
 
 
+
+    
+
+
+
+# @app.on_event("startup")
+# def on_startup():
+#     create_db_and_tables()
+
+
+
+
 @app.get("/")
 def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
@@ -68,7 +88,7 @@ def create_register_page():
 
 
 @app.post("/register")
-def register(fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
+def register(session: SessionDeep, fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
     print(fullname, email, password, uni, degreeType, degreeTitle)
     if (False):
         raise HTTPException(status_code=201, detail="Not implemented yet")
