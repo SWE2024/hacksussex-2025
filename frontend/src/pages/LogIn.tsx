@@ -22,9 +22,13 @@ const LogIn: React.FC = () => {
 
   const handleLogin= async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("User Data:", formData);
     navigate("/dashboard");
   };
+  const handleRegister= async (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate("/signup");
+  };
+
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
@@ -52,9 +56,20 @@ const LogIn: React.FC = () => {
           value={formData.password}
           onChange={handleChange}
         />
-        <Button type="submit" fullWidth variant="contained" color="primary">
-          Login
-        </Button>
+        <Box display="flex" justifyContent="space-between" width="100%">
+          <Button type="submit" fullWidth variant="contained" color="primary" sx={{ flex: 1, mr: 1 }}>
+            LOGIN
+          </Button>
+          <Button 
+            type="button" 
+            fullWidth 
+            variant="contained" 
+            color="primary" 
+            onClick={handleRegister}
+            sx={{ flex: 1 }}>
+            Register
+          </Button>
+        </Box>
       </form>
     </Box>
   );

@@ -49,10 +49,10 @@ export const Navbar: React.FC = () => {
             Grade Calculator
           </Button>
         </Box>
-            <MenuItem onClick={handleLogout}>
+        <Button color="inherit" onClick={handleLogout} sx={{marginRight: 2}}>
             <Logout sx={{ marginRight: 1 }} />
-            Logout
-            </MenuItem>
+            LOGOUT
+          </Button>
             <div>
             <Button 
                 color="inherit" 
