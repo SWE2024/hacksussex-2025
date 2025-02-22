@@ -79,6 +79,22 @@ def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
 
 
+@app.post("/login")
+def login(session: SessionDeep, email: str = Form(...), password: str = Form(...)):
+    if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+        raise HTTPException(status_code=401, detail="Incorrect login")
+    
+    statement = select(User).where(User.email == email)
+    user = session.exec(statement).first()
+    if user == None:
+        raise HTTPException(status_code=401, detail="Account not found")
+    
+    if verify_password(password, user.password):
+        return JSONResponse(content={"message": "success"}, status_code=201)
+    else:
+        raise HTTPException(status_code=401, detail="Incorrect login")
+
+
 @app.get("/register")
 def create_register_page():
     return { "universities":university_list, "types":type_list }
