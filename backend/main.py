@@ -8,6 +8,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select
 from startup import init
 from typing import Annotated, Union
 from routes.auth import router as auth_routes
+from routes.year import router as year_routes
 
 import database
 
@@ -42,5 +43,7 @@ app.add_middleware(
 def root():
     raise HTTPException(status_code=400, detail="Endpoint does not exist")
 
-    
+
+# add custom file routes
 app.include_router(auth_routes)
+app.include_router(year_routes)
