@@ -1,12 +1,15 @@
 from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-from models.uni import Hero
 from pydantic import BaseModel
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Annotated, Union
 
+from models import University, Degree, Year, Module, Assignment, User
+
 
 app = FastAPI()
+
+
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 connect_args = {"check_same_thread": False}
@@ -14,7 +17,6 @@ engine = create_engine(sqlite_url, connect_args=connect_args)
 
 
 def create_db_and_tables():
-    print("\n\nTHIS RAN\n\n")
     SQLModel.metadata.create_all(engine)
 
 
