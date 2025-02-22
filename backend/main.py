@@ -4,8 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from typing import Annotated, Union
-
 from models import University, Degree, Year, Module, Assignment, User
+
+import re
 
 
 sqlite_file_name = "database.db"
@@ -70,7 +71,49 @@ def create_register_page():
 @app.post("/register")
 def register(fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
     print(fullname, email, password, uni, degreeType, degreeTitle)
-    if (False):
-        raise HTTPException(status_code=201, detail="Not implemented yet")
-    else:
-        raise HTTPException(status_code=401, detail="Not implemented yet")
+
+    legal_input = True
+
+    # sanitise full name
+    fullname = fullname.strip()
+    fullname = re.sub(r"[^a-zA-Z\s'-]", "", fullname)
+    fullname = re.sub(r"[\s-]+", " ", fullname)
+    fullname = fullname.title()
+
+    # sanitise email
+    email = email.strip()
+    if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
+        legal_input = False
+    
+    # sanitise password
+    password = password.strip()
+    if len(password) < 8 or len(password) > 20: # check length
+        legal_input = False
+    if not re.search(r'[a-zA-Z0-9]', password): # check for alnum
+        legal_input = False
+    if not re.search(r'[^a-zA-Z0-9]', password): # check for special char
+        legal_input = False
+
+    uni = uni.strip()
+    if len(uni) < 1 or len(uni) > 50:
+        legal_input = False
+    
+    degreeType = degreeType.strip()
+    if len(degreeType) < 1 or len(degreeType) > 50:
+        legal_input = False
+
+    degreeTitle = degreeTitle.strip()
+    if len(degreeTitle) < 1 or len(degreeTitle) > 50:
+        legal_input = False
+
+    try:
+        if (legal_input):
+            # add user to db
+
+            # send the user a success code
+            raise HTTPException(status_code=201, detail="User registered successfully")
+        else:
+            raise HTTPException(status_code=401, detail="Form entered incorrectly")
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=401, detail="Unexpected error occurred")
