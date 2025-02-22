@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { Box, Button,Typography, List, ListItem, ListItemText, IconButton, ButtonBase } from "@mui/material";
 import {Add} from "@mui/icons-material";
 import CreateModule from "./CreateModule";
+import { useNavigate } from "react-router-dom";
 
 interface Module {
   name: string;
@@ -39,11 +40,12 @@ const GradeAvg: React.FC = () => {
 
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
 
-  const handleModuleClick = (module: Module) => {
-    console.log("Clicked Module:", module);
-    setSelectedModule(module);
-  };
+  const navigate = useNavigate();
 
+  const handleModuleClick = (module: Module) => {
+    console.log("Navigating to:", module.name);
+    navigate(`/module/${encodeURIComponent(module.name)}`, { state: { module } }); // ✅ Navigate correctly
+  };
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" height="60vh" padding={3} borderRadius={5} border={1}>
 
