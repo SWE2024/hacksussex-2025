@@ -29,7 +29,7 @@ const HomePage: React.FC = () => {
                 variant="contained" 
                 color="primary" 
                 sx={{ flex: 1 , mr: 1}}
-                onClick={() => navigate("/signup")}
+                onClick={() => navigate("/register")}
                 >
                 REGISTER
             </Button>

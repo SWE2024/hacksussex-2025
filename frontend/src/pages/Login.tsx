@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
+import AlertCard from "../components/AlertCard";
 
 interface User {
   email: string;
@@ -13,7 +14,9 @@ const Login: React.FC = () => {
     password: ""
 
   });
-  const [error, setError] = useState<string | null>(null);
+
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'error'>('error');
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -22,13 +25,9 @@ const Login: React.FC = () => {
 
   const handleLogin= async (e: React.FormEvent) => {
     e.preventDefault();
+
     navigate("/dashboard");
   };
-  const handleRegister= async (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate("/register");
-  };
-
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
@@ -65,12 +64,13 @@ const Login: React.FC = () => {
             fullWidth 
             variant="contained" 
             color="primary" 
-            onClick={handleRegister}
+            onClick={()=> navigate("/register")}
             sx={{ flex: 1 }}>
             Register
           </Button>
         </Box>
       </form>
+      <AlertCard message={alertMessage} onClose={()=>setAlertMessage(null)} type={alertType} />
     </Box>
   );
 };
