@@ -62,8 +62,17 @@ const GradeAvg: React.FC = () => {
   };
 
   const handleCreateYear = async (newYear: Year) => {
+    // Get the email from localStorage
+  const email = localStorage.getItem("email");
+
+  // Prepare the data to send
+  const data = {
+    ...newYear, // Include the year, credits, and weight
+    email: email, // Add the email from localStorage
+  };
+    console.log(data.email)
     try {
-      const response = await axios.post("/year/create", newYear);
+      const response = await axios.post("/year/create", data);
   
       const successMessage = response.data.detail || "Year added successfully";
   
