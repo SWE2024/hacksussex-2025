@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { useLocation, useParams } from "react-router-dom";
 
 const ModulePage: React.FC = () => {
-  const { moduleName } = useParams<{ moduleName: string }>(); // Get module name from URL
+  const { moduleName } = useParams<{ moduleName: string }>();
   const location = useLocation();
   const module = location.state?.module;
 

@@ -1,14 +1,24 @@
 import React, {useState} from "react";
-import { Box, Button,Typography, List, ListItem, ListItemText, IconButton, ButtonBase } from "@mui/material";
+import { Box, Button,Typography, List, ListItem, ListItemText, IconButton, ButtonBase, Tooltip } from "@mui/material";
 import {Add} from "@mui/icons-material";
 import CreateModule from "./CreateModule";
+import CreateYear from "./CreateYear";
 import { useNavigate } from "react-router-dom";
+import AlertCard from "./AlertCard";
+import axios from "../api/axios";
 
 interface Module {
   name: string;
   grade: number | null; 
   credit: number;
 }
+
+interface Year {
+    year: string;
+    credits: number;
+    weight: number;
+  }
+  
 
 const modules: Module[] = [
   { name: "Databases", grade: 60, credit: 20 },
@@ -35,6 +45,10 @@ const GradeAvg: React.FC = () => {
   };
 
   const [openCreateModule, setOpenCreateModule] = useState(false);
+  const [openCreateYear, setOpenCreateYear] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'error'>('error');
+
 
   const { weightedAverage, achievedPercentage, lostPercentage, remainingPercentage } = calculateWeightedAverage(modules);
 
@@ -46,6 +60,37 @@ const GradeAvg: React.FC = () => {
     console.log("Navigating to:", module.name);
     navigate(`/module/${encodeURIComponent(module.name)}`, { state: { module } }); // ✅ Navigate correctly
   };
+
+  const handleCreateYear = async (newYear: Year) => {
+    try {
+      const response = await axios.post("/year/create", newYear);
+  
+      const successMessage = response.data.detail || "Year added successfully";
+  
+      setAlertMessage(successMessage);
+      setAlertType("success");
+  
+    } catch (error: any) {
+      let errorMessage = "Error adding Year";
+  
+      if (error.response && error.response.data) {
+        if (typeof error.response.data === "string") {
+          errorMessage = error.response.data;
+        } else if (typeof error.response.data === "object") {
+          if (error.response.data.detail) {
+            errorMessage = error.response.data.detail;
+          } else {
+            errorMessage = Object.entries(error.response.data)
+              .map(([key, value]) => `${key}: ${value}`)
+              .join("\n");
+          }
+        }
+      }
+      setAlertMessage(errorMessage);
+      setAlertType("error");
+    }
+  };
+  
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" height="60vh" padding={3} borderRadius={5} border={1}>
 
@@ -68,19 +113,22 @@ const GradeAvg: React.FC = () => {
 
       <Box sx={{ width: '100%', marginBottom: 2 }}>
         <Box display={'flex'} justifyContent={'space-between'}>
-          <Typography variant="h5" gutterBottom>
-          Weighted Average: {weightedAverage.toFixed(2)}
-          </Typography>
-          <Button
-              variant="contained"
-              color="primary"
-              startIcon={<Add />}
-              onClick={() => {
-                console.log("Opening CreateModule...");
-                setOpenCreateModule(true);
-              }}            >
-              Add Module
-            </Button>
+        <Typography variant="h5" gutterBottom>Weighted Average</Typography>
+          <Box>
+            {/* IconButton with Tooltip for Adding Year */}
+            <Tooltip title="Add Year">
+              <IconButton color="primary" onClick={() => setOpenCreateYear(true)}>
+                <Add />
+              </IconButton>
+            </Tooltip>
+
+            {/* IconButton with Tooltip for Adding Module */}
+            <Tooltip title="Add Module">
+              <IconButton color="primary" onClick={() => setOpenCreateModule(true)}>
+                <Add />
+              </IconButton>
+            </Tooltip>
+          </Box>
         </Box>
         {/* Stacked Progress Bar */}
         <Box sx={{ width: "100%", height: 25, borderRadius: 5, overflow: "hidden", display: "flex", mt: 2 }}>
@@ -120,6 +168,12 @@ const GradeAvg: React.FC = () => {
         open={openCreateModule}
         onClose={() => setOpenCreateModule(false)}
         onSubmit={()=>{}}
+      />
+
+      <CreateYear
+        open={openCreateYear}
+        onClose={() => setOpenCreateYear(false)}
+        onSubmit={handleCreateYear}
       />
     </Box>
   );
