@@ -32,8 +32,17 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const data = new FormData();
+    data.append("fullname", formData.fullname);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    data.append("uni", formData.uni || "");
+    data.append("degreeType", formData.degreeType || "");
+    data.append("degreeTitle", formData.degreeTitle);
+
     try {
-      const response = await axios.post("/signup", formData);
+      const response = await axios.post("/signup", data);
       console.log("Response:", response.data);
       navigate("/login");
     } catch (error) {
