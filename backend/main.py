@@ -1,14 +1,56 @@
 from typing import Union
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
+
+
+from typing import Annotated
+
+from fastapi import Depends, FastAPI, HTTPException, Query
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+
+
+from models.uni import Hero
+
+
+
+
 app = FastAPI()
+
+
+
+
+sqlite_file_name = "database.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+
+connect_args = {"check_same_thread": False}
+engine = create_engine(sqlite_url, connect_args=connect_args)
+
+
+def create_db_and_tables():
+    print("\n\nTHIS RAN\n\n")
+    SQLModel.metadata.create_all(engine)
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+
+
+SessionDep = Annotated[Session, Depends(get_session)]
+
+
+
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 
 origins = [
     "http://localhost:5173",
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -40,3 +82,5 @@ def create_register():
 @app.post("/signup")
 def register():
     raise HTTPException(status_code=201, detail="Not implemented")
+
+
