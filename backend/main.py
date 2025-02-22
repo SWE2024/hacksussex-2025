@@ -1,30 +1,14 @@
-from typing import Union
-
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel
+from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
-
-
-
-from typing import Annotated
-
-from fastapi import Depends, FastAPI, HTTPException, Query
-from sqlmodel import Field, Session, SQLModel, create_engine, select
-
-
 from models.uni import Hero
-
-
+from pydantic import BaseModel
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from typing import Annotated, Union
 
 
 app = FastAPI()
-
-
-
-
 sqlite_file_name = "database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
-
 connect_args = {"check_same_thread": False}
 engine = create_engine(sqlite_url, connect_args=connect_args)
 
@@ -40,7 +24,6 @@ def get_session():
 
 
 SessionDep = Annotated[Session, Depends(get_session)]
-
 
 
 @app.on_event("startup")
@@ -60,10 +43,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 university_file = open('./lists/universities.txt', 'r')
 university_list = university_file.readlines()
 university_list = [line.strip() for line in university_list] # remove the whitespace and newlines
-
 type_file = open('./lists/types.txt', 'r')
 type_list = type_file.readlines()
 type_list = [line.strip() for line in type_list] # remove the whitespace and newlines
@@ -80,7 +63,6 @@ def create_register():
 
 
 @app.post("/signup")
-def register():
-    raise HTTPException(status_code=201, detail="Not implemented")
-
-
+def register(fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
+    print(fullname, email, password, uni, degreeType, degreeTitle)
+    raise HTTPException(status_code=201, detail="Not implemented yet")
