@@ -1,69 +1,162 @@
 import React, { useState } from "react";
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } from "@mui/material";
+import {
+  Drawer,
+  Box,
+  Typography,
+  TextField,
+  IconButton,
+  Grid,
+  Container,
+} from "@mui/material";
+import { Close as CloseIcon, Check as CheckIcon } from "@mui/icons-material";
 
-interface Year {
-    year: string;
-    credits: number;
-    weight: number;
-  }
-  
-  
 interface CreateYearProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (newYear: Year) => void;
+  onSubmit: (formData: FormData) => void; 
 }
 
-const CreateYear: React.FC<CreateYearProps> = ({ open, onClose, onSubmit }) => {
-  const [year, setYear] = useState<string>("");
-  const [credits, setCredits] = useState<number>(0);
-  const [weight, setWeight] = useState<number>(0);
+interface Year {
+  year: string;
+  credits: number;
+  weight: number;
+}
 
-  const handleSubmit = () => {
-    const newYear: Year = {
-      year,
-      credits,
-      weight,
-    };
-    onSubmit(newYear); // Pass the new year object to the parent
-    onClose(); // Close the dialog
+const CreateYear: React.FC<CreateYearProps> = ({
+  open,
+  onClose,
+  onSubmit,
+}) => {
+  const [formData, setFormData] = useState<Year>({
+    year: "",
+    credits: 0,
+    weight: 0,
+  });
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "credits" || name === "weight" ? Math.max(0, Number(value)) : value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Create a new FormData object
+    const formDataToSend = new FormData();
+
+    // Append form data
+    formDataToSend.append("year", formData.year);
+    formDataToSend.append("credits", String(formData.credits)); // Convert to string
+    formDataToSend.append("weight", String(formData.weight));   // Convert to string
+
+    // Optionally, you could include the email here if needed
+    const email = localStorage.getItem("email");
+    if (email) {
+      formDataToSend.append("email", email);  // Append email if it's needed for the request
+    }
+
+    // Call the onSubmit function with FormData
+    onSubmit(formDataToSend);
+
+    // Reset form data after submitting
+    setFormData({
+      year: "",
+      credits: 0,
+      weight: 0,
+    });
+
+    // Close the drawer
+    onClose();
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add New Year</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="Year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Credits"
-          value={credits}
-          onChange={(e) => setCredits(Number(e.target.value))}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          label="Weight"
-          value={weight}
-          onChange={(e) => setWeight(Number(e.target.value))}
-          fullWidth
-          margin="normal"
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} color="primary">
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          minHeight: "90vh",
+          maxHeight: "99vh",
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+          padding: "24px",
+        },
+      }}
+    >
+      <Container maxWidth="xl">
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+          }}
+        >
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h4" sx={{ fontWeight: "normal" }}>
+              Create New Year
+            </Typography>
+            <Box>
+              <IconButton color="primary" onClick={handleSubmit} size="large">
+                <CheckIcon />
+              </IconButton>
+              <IconButton onClick={onClose} size="large">
+                <CloseIcon />
+              </IconButton>
+            </Box>
+          </Box>
+
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Year"
+                  variant="outlined"
+                  value={formData.year}
+                  onChange={handleInputChange}
+                  name="year"
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Weight"
+                  variant="outlined"
+                  value={formData.weight}
+                  onChange={handleInputChange}
+                  name="weight"
+                  type="number"
+                  inputProps={{ min: 0 }}
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Year Credit"
+                  variant="outlined"
+                  value={formData.credits}
+                  onChange={handleInputChange}
+                  name="credits"
+                  type="number"
+                  inputProps={{ min: 0 }}
+                  required
+                />
+              </Grid>
+            </Grid>
+          </form>
+        </Box>
+      </Container>
+    </Drawer>
   );
 };
 

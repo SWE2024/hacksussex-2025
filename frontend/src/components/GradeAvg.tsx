@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import { Box, Button,Typography, List, ListItem, ListItemText, IconButton, ButtonBase, Tooltip } from "@mui/material";
-import {Add} from "@mui/icons-material";
+import React, { useState } from "react";
+import { Box, Button, Typography, List, ListItem, ListItemText, IconButton, ButtonBase, Tooltip } from "@mui/material";
+import { Add } from "@mui/icons-material";
 import CreateModule from "./CreateModule";
 import CreateYear from "./CreateYear";
 import { useNavigate } from "react-router-dom";
@@ -9,16 +9,15 @@ import axios from "../api/axios";
 
 interface Module {
   name: string;
-  grade: number | null; 
+  grade: number | null;
   credit: number;
 }
 
 interface Year {
-    year: string;
-    credits: number;
-    weight: number;
-  }
-  
+  year: string;
+  credits: number;
+  weight: number;
+}
 
 const modules: Module[] = [
   { name: "Databases", grade: 60, credit: 20 },
@@ -29,12 +28,12 @@ const modules: Module[] = [
 const GradeAvg: React.FC = () => {
   const calculateWeightedAverage = (modules: Module[]) => {
     const validModules = modules.filter(module => module.grade !== null);
-    
+
     const totalWeightedGrade = validModules.reduce((sum, module) => sum + (module.grade! * module.credit), 0);
     const totalCredits = modules.reduce((sum, module) => sum + module.credit, 0);
     const markedCredits = validModules.reduce((sum, module) => sum + module.credit, 0);
     const unmarkedCredits = totalCredits - markedCredits;
-    
+
     const weightedAverage = markedCredits > 0 ? totalWeightedGrade / markedCredits : 0;
 
     const achievedPercentage = (weightedAverage / 100) * (markedCredits / totalCredits) * 100;
@@ -49,7 +48,6 @@ const GradeAvg: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('error');
 
-
   const { weightedAverage, achievedPercentage, lostPercentage, remainingPercentage } = calculateWeightedAverage(modules);
 
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
@@ -61,27 +59,24 @@ const GradeAvg: React.FC = () => {
     navigate(`/module/${encodeURIComponent(module.name)}`, { state: { module } }); // ✅ Navigate correctly
   };
 
-  const handleCreateYear = async (newYear: Year) => {
-    // Get the email from localStorage
-  const email = localStorage.getItem("email");
+  const handleCreateYear = async (formData: FormData) => {
+    // Prepare the data to send
+    const email = localStorage.getItem("email");
 
-  // Prepare the data to send
-  const data = {
-    ...newYear, // Include the year, credits, and weight
-    email: email, // Add the email from localStorage
-  };
-    console.log(data.email)
+    // Append formData to FormData
+    formData.append("email", email!); // Add email from localStorage
+
     try {
-      const response = await axios.post("/year/create", data);
-  
+      const response = await axios.post("/year/create", formData);
+
       const successMessage = response.data.detail || "Year added successfully";
-  
+
       setAlertMessage(successMessage);
       setAlertType("success");
-  
+
     } catch (error: any) {
       let errorMessage = "Error adding Year";
-  
+
       if (error.response && error.response.data) {
         if (typeof error.response.data === "string") {
           errorMessage = error.response.data;
@@ -99,30 +94,23 @@ const GradeAvg: React.FC = () => {
       setAlertType("error");
     }
   };
-  
+
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" height="60vh" padding={3} borderRadius={5} border={1}>
-
       <Box display={"flex"} justifyContent={'space-between'}>
         <Typography variant="h4" gutterBottom>
-        Grade Average
+          Grade Average
         </Typography>
         <Box>
-            <Button>
-            Year 1
-            </Button>
-            <Button>
-            Year 2
-            </Button>
-            <Button>
-            Year 3 
-            </Button>
+          <Button>Year 1</Button>
+          <Button>Year 2</Button>
+          <Button>Year 3</Button>
         </Box>
       </Box>
 
       <Box sx={{ width: '100%', marginBottom: 2 }}>
         <Box display={'flex'} justifyContent={'space-between'}>
-        <Typography variant="h5" gutterBottom>Weighted Average</Typography>
+          <Typography variant="h5" gutterBottom>Weighted Average</Typography>
           <Box>
             {/* IconButton with Tooltip for Adding Year */}
             <Tooltip title="Add Year">
@@ -139,6 +127,7 @@ const GradeAvg: React.FC = () => {
             </Tooltip>
           </Box>
         </Box>
+
         {/* Stacked Progress Bar */}
         <Box sx={{ width: "100%", height: 25, borderRadius: 5, overflow: "hidden", display: "flex", mt: 2 }}>
           {/* Achieved */}
@@ -176,7 +165,7 @@ const GradeAvg: React.FC = () => {
       <CreateModule
         open={openCreateModule}
         onClose={() => setOpenCreateModule(false)}
-        onSubmit={()=>{}}
+        onSubmit={() => {}}
       />
 
       <CreateYear
