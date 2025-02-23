@@ -23,7 +23,7 @@ const ModulePage: React.FC = () => {
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await axios.get(`/assignments/create`);
+        const response = await axios.get(`/assignments`);
         setAssignments(response.data.assignments); // Store fetched assignments
       } catch (error) {
         console.error("Error fetching assignments:", error);
@@ -52,7 +52,7 @@ const ModulePage: React.FC = () => {
 
 
       // Send POST request to add the assignment to the backend
-      const response = await axios.post("/assignments", formData, {
+      const response = await axios.post("/assignments/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Ensuring that the form data is sent correctly
         },
