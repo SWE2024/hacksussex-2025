@@ -79,7 +79,7 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
 
 
 @router.get("/assignments")
-def get_assignments(request: Request, session: database.SessionDeP, email: str = Cookie(None), module_name: str = Form(...), year: str = Form(...)):
+def get_assignments(request: Request, session: database.SessionDeP, module_name: str, year: str, email: str = Cookie(None)):
     if not email:
         raise HTTPException(status_code=401, detail="Unauthorized: No email in cookies")
 
