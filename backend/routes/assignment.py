@@ -87,19 +87,59 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
 
 
 
+@router.get("/assignments")
+def get_assignments(request: Request, session: database.SessionDeP, email: str = Cookie(None), module_name: str = Form(...), year: str = Form(...)):
+    if not email:
+        raise HTTPException(status_code=401, detail="Unauthorized: No email in cookies")
+
+    statement = select(User).where(User.email == email)
+    user = session.exec(statement).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
 
+    statement = select(Year).where((Year.user_id == user.id) & (Year.num == year))
+    years = session.exec(statement).all()
+
+    if len(years) > 1:
+        raise HTTPException(status_code=500, detail="Duplicated year")
+
+    
+    year_ref = years[0]
 
 
+    statement = select(Module).where((Module.name == module_name) & (Module.year_id == year_ref.id))
+    modules = session.exec(statement).all()
 
+    if len(modules) > 1:
+        raise HTTPException(status_code=500, detail="Duplicated year")
 
-
-
+    
+    module_ref = modules[0]
 
 
 
     
-    
+    statement = select(Assignment).where(Assignment.module_id == module_ref.id)
+    assignments = session.exec(statement).all()
+
+    if assignments is None:
+        return JSONResponse(content={""}, status_code=201)
+
+
+    json = []
+
+    for assignment in assignments:
+        dic = {
+            "type": assignment.type_,
+            "grade": assignment.grade,
+            "name": assignment.name,
+            "weight": assignment.weight,
+        }
+        json.append(dic)
+        
+    return JSONResponse(content=json, status_code=201)
 
 
     
