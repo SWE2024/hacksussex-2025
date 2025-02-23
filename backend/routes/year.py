@@ -26,7 +26,7 @@ def get_year(request: Request, session: database.SessionDeP, email: str = Cookie
     return {"years": years}
 
 @router.post("/year/create")
-def create_year(request: Request, session: database.SessionDeP, year: str = Form(...), credits: int = Form(...), weight: float = Form(...)):
+def create_year(request: Request, session: database.SessionDeP, year: str = Form(...), credits: int = Form(...), weight: float = Form(...)):    
     email = request.cookies.get("email")
 
     statement = select(User).where(User.email == email)
