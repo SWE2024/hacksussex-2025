@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlmodel import select
-from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 
 import database
 from models import *
@@ -38,13 +37,13 @@ def create_module(request: Request, session: database.SessionDeP, module_name: s
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
 
-    if user == None:
+    if user is None:
         raise HTTPException(status_code=401, detail="User does not exist")
 
     statement_year = select(Year).where((Year.num == year) & (Year.user_id == user.id))
     year_ = session.exec(statement_year).first()
 
-    if year_ == None:
+    if year_ is None:
         print("year not found for this user")
         raise HTTPException(status_code=404, detail="Year not found for this user")
 

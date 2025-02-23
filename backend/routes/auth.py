@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import JSONResponse
 from sqlmodel import select
 import re
-from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 
 import database
 from utils import hash_password, verify_password
-from models import *
+from models import Degree, University, User
 
 
 router = APIRouter(prefix="", tags=["Users"])
@@ -16,15 +15,15 @@ router = APIRouter(prefix="", tags=["Users"])
 def login(session: database.SessionDeP, email: str = Form(...), password: str = Form(...)):
     if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
         raise HTTPException(status_code=401, detail="Incorrect login")
-    
+
     if len(password) < 8 or len(password) > 20:
         raise HTTPException(status_code=401, detail="Incorrect login")
-    
+
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
     if user == None:
         raise HTTPException(status_code=401, detail="Account not found")
-    
+
     if verify_password(password, user.password):
         return JSONResponse(content={"message": "success"}, status_code=201)
     else:
@@ -42,7 +41,7 @@ def register(session: database.SessionDeP, fullname: str = Form(...), email: str
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
 
-    if user == None:
+    if user is None:
         legal_input = True
 
         # sanitise full name
@@ -55,7 +54,7 @@ def register(session: database.SessionDeP, fullname: str = Form(...), email: str
         email = email.strip()
         if not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
             legal_input = False
-        
+    
         # sanitise password
         password = password.strip()
         if len(password) < 8 or len(password) > 20: # check length
@@ -68,7 +67,7 @@ def register(session: database.SessionDeP, fullname: str = Form(...), email: str
         uni = uni.strip()
         if len(uni) < 1 or len(uni) > 50:
             legal_input = False
-        
+    
         degreeType = degreeType.strip()
         if len(degreeType) < 1 or len(degreeType) > 50:
             legal_input = False
@@ -85,16 +84,16 @@ def register(session: database.SessionDeP, fullname: str = Form(...), email: str
                 # get university and degree ids
                 statement = select(University).where(University.name == uni)
                 university: University | None = session.exec(statement).first()
-                if university == None:
+                if university is None:
                     raise HTTPException(status_code=401, detail="University does not exist")
 
                 statement = select(Degree).where(Degree.title == degreeTitle and Degree.type == degreeType)
                 degree = session.exec(statement).first()
-                if degree == None:
+                if degree is None:
                     degree = Degree(title=degreeTitle, type=degreeType)
                     session.add(degree)
                     session.flush()
-                
+        
                 degree = session.exec(statement).first()
 
                 if degree is None:
