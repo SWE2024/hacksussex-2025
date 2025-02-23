@@ -68,12 +68,6 @@ const CreateYear: React.FC<CreateYearProps> = ({
     formDataToSend.append("credits", String(formData.credits)); // Convert to string
     formDataToSend.append("weight", String(formData.weight));   // Convert to string
 
-    // Optionally, you could include the email here if needed
-    const email = localStorage.getItem("email");
-    if (email) {
-      formDataToSend.append("email", email);  // Append email if it's needed for the request
-    }
-
     // Call the onSubmit function with FormData
     onSubmit(formDataToSend);
 

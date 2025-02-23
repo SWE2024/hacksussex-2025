@@ -51,12 +51,6 @@ const CreateModule: React.FC<CreateModuleProps> = ({
     formDataToSend.append("credits", String(formData.credits)); // Convert to string
     formDataToSend.append("year", formData.year);
 
-    // Optionally, include email from localStorage
-    const email = localStorage.getItem("email");
-    if (email) {
-      formDataToSend.append("email", email);
-    }
-
     // Call onSubmit with the FormData object
     onSubmit(formDataToSend);
 

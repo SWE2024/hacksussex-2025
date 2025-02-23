@@ -31,7 +31,7 @@ const Login: React.FC = () => {
     data.append("password", formData.password);
     try {
       const response = await axios.post("/login", data);
-      localStorage.setItem('email', formData.email)
+      document.cookie = `email=${formData.email}`;
       const successMessage = response.data.detail || "Login successfully";
       setAlertMessage(successMessage);
       setAlertType("success");

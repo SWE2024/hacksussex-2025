@@ -54,11 +54,6 @@ const GradeAvg: React.FC = () => {
   };
 
   const handleCreateYear = async (formData: FormData) => {
-    // Prepare the data to send
-    const email = localStorage.getItem("email");
-
-    // Append formData to FormData
-    formData.append("email", email!); // Add email from localStorage
 
     try {
       const response = await axios.post("/year/create", formData);
