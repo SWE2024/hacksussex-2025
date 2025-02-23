@@ -124,9 +124,9 @@ const AssignmentsList: React.FC<{ assignments: Assignment[] }> = ({ assignments 
               <Typography variant="h6" gutterBottom>
                 {assignment.name}
               </Typography>
-              <Typography variant="body2">Grade: {assignment.grade}</Typography>
+              <Typography variant="body2">Grade: {assignment.grade}%</Typography>
+              <Typography variant="body2">Weight: {assignment.weight}%</Typography>
               <Typography variant="body2">Type: {assignment.type}</Typography>
-              <Typography variant="body2">Weight: {assignment.weight}</Typography>
             </CardContent>
           </Card>
         </Grid>
@@ -140,7 +140,7 @@ const ModuleInfo: React.FC<{ module: Module; year: string }> = ({ module, year }
   <Box padding={2} borderRadius={5} border={1} boxShadow={2} marginBottom={2}>
     <Typography variant="h4">{module.name}</Typography>
     <Typography variant="h6">Credits: {module.credits}</Typography>
-    <Typography variant="h6">Grade: {module.grade !== null ? module.grade : "Not Marked"}</Typography>
+    <Typography variant="h6">Grade: {module.grade !== undefined ? `${module.grade}%`: "Not Marked"}</Typography>
     <Typography variant="h6">Year: {year}</Typography>
   </Box>
 )

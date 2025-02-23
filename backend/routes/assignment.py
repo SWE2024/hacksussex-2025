@@ -61,9 +61,6 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
         print(e)
         raise HTTPException(status_code=422, detail="Weight bad input")
 
-    total_grade = session.exec(sum(Assignment.grade)).scalar()
-    print(total_grade)
-
     assignment = Assignment(module_id=module_ref.id, type_=assignment_type, grade=grade_float, name=name, weight=weight_float) 
     session.add(assignment)
 

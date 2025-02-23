@@ -187,17 +187,17 @@ const GradeAvg: React.FC = () => {
         {/* Stacked Progress Bar */}
         <Box sx={{ width: "100%", height: 25, borderRadius: 5, overflow: "hidden", display: "flex", mt: 2 }}>
           {/* Achieved */}
-          <Box sx={{ width: `${achievedPercentage}%`, backgroundColor: "#28b463" }} />
+          <Box sx={{ width: `${isNaN(achievedPercentage) ? 0 : achievedPercentage}%`, backgroundColor: "#28b463" }} />
           {/* Remaining */}
-          <Box sx={{ width: `${remainingPercentage}%`, backgroundColor: "#2e86c1" }} />
+          <Box sx={{ width: `${isNaN(remainingPercentage) ? 100 : remainingPercentage}%`, backgroundColor: "#2e86c1" }} />
           {/* Lost */}
-          <Box sx={{ width: `${lostPercentage}%`, backgroundColor: "#a93226" }} />
+          <Box sx={{ width: `${isNaN(lostPercentage) ? 0 : lostPercentage}%`, backgroundColor: "#a93226" }} />
         </Box>
 
         <Box display="flex" justifyContent="space-between" mt={1}>
-          <Typography variant="body2" color="#28b463">{`Achieved: ${achievedPercentage.toFixed(1)}%`}</Typography>
-          <Typography variant="body2" color="#2e86c1">{`Remaining: ${remainingPercentage.toFixed(1)}%`}</Typography>
-          <Typography variant="body2" color="#a93226">{`Lost: ${lostPercentage.toFixed(1)}%`}</Typography>
+          <Typography variant="body2" color="#28b463">{`Achieved: ${isNaN(achievedPercentage) ? 0 : achievedPercentage.toFixed(1)}%`}</Typography>
+          <Typography variant="body2" color="#2e86c1">{`Remaining: ${isNaN(remainingPercentage) ? 100 : remainingPercentage.toFixed(1)}%`}</Typography>
+          <Typography variant="body2" color="#a93226">{`Lost: ${isNaN(lostPercentage) ? 0 : lostPercentage.toFixed(1)}%`}</Typography>
         </Box>
       </Box>
       <Box sx={{overflowY: 'auto'}}>
@@ -211,7 +211,7 @@ const GradeAvg: React.FC = () => {
                     <ListItemText primary={`Credits: ${module.credits}`} />
                 </Box>
                 <ListItemText 
-                    primary={module.grade !== null ? `Grade: ${module.grade}` : "Not Marked"} 
+                    primary={module.grade !== null ? `Grade: ${module.grade}%` : "Not Marked"} 
                     sx={{ flex: 1, textAlign: 'right', fontStyle: module.grade === null ? 'italic' : 'normal' }} 
                 />
                 </ListItem>
