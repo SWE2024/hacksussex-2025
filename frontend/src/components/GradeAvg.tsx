@@ -154,10 +154,10 @@ const GradeAvg: React.FC = () => {
             <Button
               key={year.id}
               onClick={() => {
-                setSelectedYear(year.name || `${year.num}`);
+                setSelectedYear(`${year.num}`);
               }}
             >
-              {year.name || `${year.num}`}
+              {`Year ${year.num}`}
             </Button>
           ))}
         </Box>
