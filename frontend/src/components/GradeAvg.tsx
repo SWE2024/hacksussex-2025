@@ -77,10 +77,11 @@ const GradeAvg: React.FC = () => {
     }
   }, [selectedYear, refreshKey]);
 
-  const handleModuleClick = (module: Module) => {
+  const handleModuleClick = (module: Module, year: string|null) => {
     console.log("Navigating to:", module.name);
-    navigate(`/module/${encodeURIComponent(module.name)}`, { state: { module } }); // ✅ Navigate correctly
+    navigate(`/module/${encodeURIComponent(module.name)}`, { state: { module, year } });
   };
+  
 
   const handleCreateYear = async (formData: FormData) => {
     try {
@@ -203,7 +204,7 @@ const GradeAvg: React.FC = () => {
 
         <List sx={{ width: "100%" }} >
             {modules.map((module) => (
-            <ButtonBase key={module.name} onClick={() => handleModuleClick(module)} sx={{ width: "100%", textAlign: "left" }}>
+            <ButtonBase key={module.name} onClick={() => handleModuleClick(module, selectedYear)} sx={{ width: "100%", textAlign: "left" }}>
                 <ListItem sx={{ marginBottom: 1, display: 'flex', justifyContent: "space-between", paddingX: 2 }}>
                 <Box>
                     <ListItemText primary={module.name} />
