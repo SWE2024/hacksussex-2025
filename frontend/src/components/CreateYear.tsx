@@ -131,9 +131,9 @@ const CreateYear: React.FC<CreateYearProps> = ({
                     name="year"
                     label="Year"
                   >
-                  <MenuItem value="Year 1">Year 1</MenuItem>
-                  <MenuItem value="Year 2">Year 2</MenuItem>
-                  <MenuItem value="Year 3">Year 3</MenuItem>
+                  <MenuItem value="1">Year 1</MenuItem>
+                  <MenuItem value="2">Year 2</MenuItem>
+                  <MenuItem value="3">Year 3</MenuItem>
                 </Select>
               </FormControl>
 

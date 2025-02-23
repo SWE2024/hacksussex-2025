@@ -29,7 +29,7 @@ const CreateModule: React.FC<CreateModuleProps> = ({
   const [formData, setFormData] = useState({
     module_name: "",
     credits: 0,
-    year: "",
+    year: 0,
   });
 
   const handleInputChange = (
@@ -38,7 +38,7 @@ const CreateModule: React.FC<CreateModuleProps> = ({
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "credit" ? Math.max(0, Number(value)) : value,
+      [name]: name === "credit" || name === "year" ? Math.max(0, Number(value)) : value,
     }));
   };
 
@@ -49,7 +49,7 @@ const CreateModule: React.FC<CreateModuleProps> = ({
     const formDataToSend = new FormData();
     formDataToSend.append("module_name", formData.module_name);
     formDataToSend.append("credits", String(formData.credits)); // Convert to string
-    formDataToSend.append("year", formData.year);
+    formDataToSend.append("year", String(formData.year));
 
     // Call onSubmit with the FormData object
     onSubmit(formDataToSend);
@@ -58,7 +58,7 @@ const CreateModule: React.FC<CreateModuleProps> = ({
     setFormData({
       module_name: "",
       credits: 0,
-      year: "",
+      year: 0,
     });
 
     // Close the drawer
@@ -122,14 +122,14 @@ const CreateModule: React.FC<CreateModuleProps> = ({
                 <FormControl fullWidth>
                   <InputLabel>Year</InputLabel>
                   <Select
-                    value={formData.year}
+                    value={String(formData.year)}
                     onChange={handleInputChange}
                     name="year"
                     required
                   >
-                    <MenuItem value="Year 1">Year 1</MenuItem>
-                    <MenuItem value="Year 2">Year 2</MenuItem>
-                    <MenuItem value="Year 3">Year 3</MenuItem>
+                    <MenuItem value="1">Year 1</MenuItem>
+                    <MenuItem value="2">Year 2</MenuItem>
+                    <MenuItem value="3">Year 3</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
