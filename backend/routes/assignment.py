@@ -22,30 +22,22 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
-
     
     statement = select(Year).where((Year.user_id == user.id) & (Year.num == year))
     years = session.exec(statement).all()
 
     if len(years) > 1:
         raise HTTPException(status_code=500, detail="Duplicated year")
-
     
     year_ref = years[0]
-
 
     statement = select(Module).where((Module.name == module_name) & (Module.year_id == year_ref.id))
     modules = session.exec(statement).all()
 
     if len(modules) > 1:
         raise HTTPException(status_code=500, detail="Duplicated year")
-
     
     module_ref = modules[0]
-
-
-
     
     statement = select(Assignment).where((Assignment.name == name) & (Assignment.module_id == module_ref.id))
     assignment = session.exec(statement).first()
@@ -53,7 +45,6 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
     if assignment is not None:
         raise HTTPException(status_code=500, detail="Duplicated Assignment")
     
-
     grade_float = None
     try:
        grade_float = float(grade) 
@@ -61,7 +52,6 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
         print("could not convert str to float for grade")
         print(e)
         raise HTTPException(status_code=422, detail="Grade bad input")
-
     
     weight_float = None
     try:
@@ -71,9 +61,11 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
         print(e)
         raise HTTPException(status_code=422, detail="Weight bad input")
 
+    total_grade = session.exec(sum(Assignment.grade)).scalar()
+    print(total_grade)
+
     assignment = Assignment(module_id=module_ref.id, type_=assignment_type, grade=grade_float, name=name, weight=weight_float) 
     session.add(assignment)
-
 
     try:
         session.commit()
@@ -81,7 +73,6 @@ def create_assignment(request: Request, session: database.SessionDeP, email: str
         print("Could you commit")
         print(e)
         raise HTTPException(status_code=500, detail="Failed to commit")
-
     
     return JSONResponse(content={"message": "Added new assignment!"}, status_code=201)
 
@@ -98,35 +89,27 @@ def get_assignments(request: Request, session: database.SessionDeP, email: str =
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-
     statement = select(Year).where((Year.user_id == user.id) & (Year.num == year))
     years = session.exec(statement).all()
 
     if len(years) > 1:
         raise HTTPException(status_code=500, detail="Duplicated year")
-
     
     year_ref = years[0]
-
 
     statement = select(Module).where((Module.name == module_name) & (Module.year_id == year_ref.id))
     modules = session.exec(statement).all()
 
     if len(modules) > 1:
         raise HTTPException(status_code=500, detail="Duplicated year")
-
     
     module_ref = modules[0]
 
-
-
-    
     statement = select(Assignment).where(Assignment.module_id == module_ref.id)
     assignments = session.exec(statement).all()
 
     if assignments is None:
         return JSONResponse(content={""}, status_code=201)
-
 
     json = []
 
