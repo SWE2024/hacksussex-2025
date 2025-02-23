@@ -11,7 +11,9 @@ router = APIRouter(prefix="", tags=["Users"])
 
 
 @router.post("/module/create")
-def create_module(request: Request, session: database.SessionDeP, module_name: str = Form(...), credits: int = Form(...), year: str = Form(...), email: str = Form(...)):
+def create_module(request: Request, session: database.SessionDeP, module_name: str = Form(...), credits: int = Form(...), year: str = Form(...)):
+    email = request.cookies.get("email")
+
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
 
