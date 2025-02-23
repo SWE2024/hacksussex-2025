@@ -7,11 +7,13 @@ university_list = university_file.readlines()
 
 def init(engine):
     with Session(engine) as session:
+        # populate university list
         for name in university_list:
             name = name.strip()
             uni = University(name=f"{name}")
             session.add(uni)
         session.commit()
+
 
 def set_university_global(app):
     university_file = open('./lists/universities.txt', 'r')

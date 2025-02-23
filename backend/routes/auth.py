@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 
 import database
 from utils import hash_password, verify_password
-from models import University, Degree, User
+from models import *
 
 
 router = APIRouter(prefix="", tags=["Users"])
@@ -41,8 +41,8 @@ def create_register_page(request: Request):
 def register(session: database.SessionDeP, fullname: str = Form(...), email: str = Form(...), password: str = Form(...), uni: str = Form(...), degreeType: str = Form(...), degreeTitle: str = Form(...)):
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
+
     if user == None:
-        
         legal_input = True
 
         # sanitise full name

@@ -9,56 +9,73 @@ import {
   Container,
   FormControl,
   InputLabel,
-  MenuItem,
   Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import { Close as CloseIcon, Check as CheckIcon } from "@mui/icons-material";
-import { SelectChangeEvent } from "@mui/material/Select";
 
-interface CreateModuleProps {
+interface CreateYearProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (formData: FormData) => void; // Updated to expect FormData
+  onSubmit: (formData: FormData) => void; 
 }
 
-const CreateModule: React.FC<CreateModuleProps> = ({
+interface Year {
+  year: string;
+  credits: number;
+  weight: number;
+}
+
+const CreateYear: React.FC<CreateYearProps> = ({
   open,
   onClose,
   onSubmit,
 }) => {
-  const [formData, setFormData] = useState({
-    module_name: "",
+  const [formData, setFormData] = useState<Year>({
+    year: "",
     credits: 0,
-    year: 0,
+    weight: 0,
   });
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    const { name, value } = e.target;
+
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: name === "credits" || name === "weight" ? Math.max(0, Number(value)) : value,
+    }));
+  };
+
+  const handleSelectChange = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "credit" || name === "year" ? Math.max(0, Number(value)) : value,
+      [name]: value,
     }));
-  };
+  };  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Create FormData and append values
+    // Create a new FormData object
     const formDataToSend = new FormData();
-    formDataToSend.append("module_name", formData.module_name);
-    formDataToSend.append("credits", String(formData.credits)); // Convert to string
-    formDataToSend.append("year", String(formData.year));
 
-    // Call onSubmit with the FormData object
+    // Append form data
+    formDataToSend.append("year", formData.year);
+    formDataToSend.append("credits", String(formData.credits)); // Convert to string
+    formDataToSend.append("weight", String(formData.weight));   // Convert to string
+
+    // Call the onSubmit function with FormData
     onSubmit(formDataToSend);
 
     // Reset form data after submitting
     setFormData({
-      module_name: "",
+      year: "",
       credits: 0,
-      year: 0,
+      weight: 0,
     });
 
     // Close the drawer
@@ -91,7 +108,7 @@ const CreateModule: React.FC<CreateModuleProps> = ({
         >
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h4" sx={{ fontWeight: "normal" }}>
-              Create New Module
+              Add New Year
             </Typography>
             <Box>
               <IconButton color="primary" onClick={handleSubmit} size="large">
@@ -106,38 +123,38 @@ const CreateModule: React.FC<CreateModuleProps> = ({
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel>Year</InputLabel>
+                  <Select
+                    value={formData.year}
+                    onChange={handleSelectChange}
+                    name="year"
+                    label="Year"
+                  >
+                  <MenuItem value="1">Year 1</MenuItem>
+                  <MenuItem value="2">Year 2</MenuItem>
+                  <MenuItem value="3">Year 3</MenuItem>
+                </Select>
+              </FormControl>
+
+              </Grid>
+              <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Module Name"
+                  label="Weight (%)"
                   variant="outlined"
-                  value={formData.module_name}
+                  value={formData.weight}
                   onChange={handleInputChange}
-                  name="module_name"
+                  name="weight"
+                  type="number"
+                  inputProps={{ min: 0 }}
                   required
                 />
               </Grid>
-
-              {/* Year Selection Dropdown */}
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Year</InputLabel>
-                  <Select
-                    value={String(formData.year)}
-                    onChange={handleInputChange}
-                    name="year"
-                    required
-                  >
-                    <MenuItem value="1">Year 1</MenuItem>
-                    <MenuItem value="2">Year 2</MenuItem>
-                    <MenuItem value="3">Year 3</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Module Credit"
+                  label="Year Credits"
                   variant="outlined"
                   value={formData.credits}
                   onChange={handleInputChange}
@@ -155,4 +172,4 @@ const CreateModule: React.FC<CreateModuleProps> = ({
   );
 };
 
-export default CreateModule;
+export default CreateYear;

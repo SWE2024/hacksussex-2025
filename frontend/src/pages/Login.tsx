@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button, TextField, MenuItem } from "@mui/material";
+import { Box, Typography, Button, TextField } from "@mui/material";
 import AlertCard from "../components/AlertCard";
 import axios from "../api/axios";
 
@@ -31,8 +31,7 @@ const Login: React.FC = () => {
     data.append("password", formData.password);
     try {
       const response = await axios.post("/login", data);
-      console.log("Data:", data)
-      console.log("Response:", response.data);
+      document.cookie = `email=${formData.email}`;
       const successMessage = response.data.detail || "Login successfully";
       setAlertMessage(successMessage);
       setAlertType("success");
