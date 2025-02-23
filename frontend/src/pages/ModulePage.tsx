@@ -9,6 +9,7 @@ const ModulePage: React.FC = () => {
 
   // State for storing assignments
   const [assignments, setAssignments] = useState<any[]>([]);
+  const [assignmentName, setAssignmentName] = useState("");
   const [assignmentType, setAssignmentType] = useState("");
   const [assignmentGrade, setAssignmentGrade] = useState<number | string>("");
   const [assignmentWeight, setAssignmentweight] = useState<number | string>("");
@@ -46,6 +47,7 @@ const ModulePage: React.FC = () => {
       formData.append("grade", assignmentGrade.toString());
       formData.append("weight", assignmentWeight.toString());
       formData.append("module_name", module.name);
+      formData.append("name", assignmentName);
       formData.append("year", year);
 
 
@@ -81,6 +83,14 @@ const ModulePage: React.FC = () => {
       <Box mt={3}>
         <Typography variant="h6">Add Assignment</Typography>
         <Grid container spacing={2} mt={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Assignment Name"
+              fullWidth
+              value={assignmentName}
+              onChange={(e) => setAssignmentName(e.target.value)}
+            />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               label="Assignment Type"
