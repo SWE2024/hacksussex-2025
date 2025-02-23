@@ -36,7 +36,6 @@ def create_year(request: Request, session: database.SessionDeP, year: int = Form
     year_check = select(Year).where((Year.num == year) & (Year.user_id == user.id))
     year_check = session.exec(year_check).first()
 
-    
     if year_check is not None:
         raise HTTPException(status_code=401, detail="Duplicated year")
 
