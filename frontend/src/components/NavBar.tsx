@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
         </Box>
         <Button color="inherit" onClick={() => navigate("/login")} sx={{ marginRight: 2 }}>
           <Logout sx={{ marginRight: 1 }} />
-          LOGOUT
+          Logout
         </Button>
         <div>
           <Button
@@ -102,10 +102,11 @@ export const Navbar: React.FC = () => {
           </Menu>
         </div>
 
-        {/* Dark Mode Toggle */}
-        <DarkModeIcon color="inherit" onClick={toggleDarkMode}>
-          <DarkMode />
-        </DarkModeIcon>
+        <IconButton onClick={toggleDarkMode}>
+          <DarkModeIcon sx={{ color: "white" }}>
+            <DarkMode />
+          </DarkModeIcon>
+        </IconButton>
       </Toolbar>
     </AppBar>
   );
