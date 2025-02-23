@@ -48,9 +48,6 @@ const Register: React.FC = () => {
       const response = await axios.post("/register", data);
       console.log("Response:", response.data);
       document.cookie = `email=${formData.email}`;
-      const successMessage = response.data.detail || "Resigtered successfully";
-      setAlertMessage(successMessage);
-      setAlertType("success");
       // handle the response, get the user id, username here
 
       navigate("/dashboard");

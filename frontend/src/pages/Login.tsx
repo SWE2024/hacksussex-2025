@@ -32,10 +32,6 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post("/login", data);
       document.cookie = `email=${formData.email}`;
-      const successMessage = response.data.detail || "Login successfully";
-      setAlertMessage(successMessage);
-      setAlertType("success");
-
       navigate("/dashboard");
     } catch (error: any) {
       const errorMessage =

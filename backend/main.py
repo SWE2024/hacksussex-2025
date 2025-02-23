@@ -1,10 +1,16 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from models import University, Degree, Year, Module, Assignment, User
+from pydantic import BaseModel
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+from startup import init, set_university_global
+from typing import Annotated, Union
 from routes.auth import router as auth_routes
 from routes.year import router as year_routes
 from routes.module import router as module_routes
-from startup import init, set_university_global
+from routes.assignment import router as assignment_routes
 
 import database
 
@@ -44,3 +50,4 @@ def root():
 app.include_router(auth_routes)
 app.include_router(year_routes)
 app.include_router(module_routes)
+app.include_router(assignment_routes)

@@ -88,7 +88,7 @@ const HomeGradeAvg: React.FC = () => {
               <ListItemText primary={`Credits: ${module.credit}`} />
             </Box>
             <ListItemText 
-              primary={module.grade !== null ? `Grade: ${module.grade}` : "Not Marked"} 
+              primary={module.grade !== null ? `Grade: ${module.grade}%` : "Not Marked"} 
               sx={{ flex: 1, textAlign: 'right', fontStyle: module.grade === null ? 'italic' : 'normal' }} 
             />
           </ListItem>
