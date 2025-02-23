@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Typography, List, ListItem, ListItemText, IconButton, ButtonBase, Tooltip } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import CreateModule from "./CreateModule";
@@ -47,6 +47,22 @@ const GradeAvg: React.FC = () => {
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
 
   const navigate = useNavigate();
+
+  const [years, setYears] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchYears = async () => {
+      try {
+        const response = await axios.get("/year");
+        console.log("Years data:", response.data);
+        setYears(response.data.years);
+      } catch (error) {
+        console.error("Error fetching years:", error);
+      }
+    };
+
+    fetchYears();
+  }, []);
 
   const handleModuleClick = (module: Module) => {
     console.log("Navigating to:", module.name);
@@ -128,9 +144,9 @@ const GradeAvg: React.FC = () => {
           Grade Average
         </Typography>
         <Box>
-          <Button>Year 1</Button>
-          <Button>Year 2</Button>
-          <Button>Year 3</Button>
+          {years.map((year) => (
+          <Button key={year.id}>{year.name || `${year.num}`}</Button>
+          ))}
         </Box>
       </Box>
 
