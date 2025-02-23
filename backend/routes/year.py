@@ -26,15 +26,12 @@ def get_year(request: Request, session: database.SessionDeP, email: str = Cookie
     return {"years": years}
 
 @router.post("/year/create")
-def create_year(request: Request, session: database.SessionDeP, year: str = Form(...), credits: int = Form(...), weight: float = Form(...), email: str = Cookie(None)):
+def create_year(request: Request, session: database.SessionDeP, year: int = Form(...), credits: int = Form(...), weight: float = Form(...), email: str = Cookie(None)):
     statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
 
     if user == None:
         raise HTTPException(status_code=401, detail="User does not exist")
-
-    year = year.replace("Year ", "")
-
 
     year_check = select(Year).where((Year.num == year) & (Year.user_id == user.id))
     year_check = session.exec(year_check).first()
@@ -43,7 +40,7 @@ def create_year(request: Request, session: database.SessionDeP, year: str = Form
     if year_check is not None:
         raise HTTPException(status_code=401, detail="Duplicated year")
 
-    new_year = Year(num=int(year), credits=credits, weight=weight, user_id=user.id)
+    new_year = Year(num=year, credits=credits, weight=weight, user_id=user.id)
     session.add(new_year)
     session.commit()
 
