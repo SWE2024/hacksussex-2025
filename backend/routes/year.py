@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 from sqlmodel import select
-import re
 from fastapi import Depends, FastAPI, Form, HTTPException, Query, Response
 
 import database
-from utils import hash_password, verify_password
 from models import *
 
 
@@ -13,8 +11,8 @@ router = APIRouter(prefix="", tags=["Users"])
 
 
 @router.post("/year/create")
-def create_year(request: Request, session: database.SessionDeP, year: str = Form(...), credits: int = Form(...), weight: float = Form(...)):
-    statement = select(User).where(User.email == request.headers.get("email"))
+def create_year(request: Request, session: database.SessionDeP, year: str = Form(...), credits: int = Form(...), weight: float = Form(...), email: str = Form(...)):
+    statement = select(User).where(User.email == email)
     user = session.exec(statement).first()
 
     if user == None:

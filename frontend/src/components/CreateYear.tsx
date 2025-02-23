@@ -7,6 +7,11 @@ import {
   IconButton,
   Grid,
   Container,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import { Close as CloseIcon, Check as CheckIcon } from "@mui/icons-material";
 
@@ -43,6 +48,14 @@ const CreateYear: React.FC<CreateYearProps> = ({
       [name]: name === "credits" || name === "weight" ? Math.max(0, Number(value)) : value,
     }));
   };
+
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,7 +114,7 @@ const CreateYear: React.FC<CreateYearProps> = ({
         >
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <Typography variant="h4" sx={{ fontWeight: "normal" }}>
-              Create New Year
+              Add New Year
             </Typography>
             <Box>
               <IconButton color="primary" onClick={handleSubmit} size="large">
@@ -116,20 +129,25 @@ const CreateYear: React.FC<CreateYearProps> = ({
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Year"
-                  variant="outlined"
-                  value={formData.year}
-                  onChange={handleInputChange}
-                  name="year"
-                  required
-                />
+              <FormControl fullWidth variant="outlined" required>
+                <InputLabel>Year</InputLabel>
+                  <Select
+                    value={formData.year}
+                    onChange={handleSelectChange}
+                    name="year"
+                    label="Year"
+                  >
+                  <MenuItem value="1">Year 1</MenuItem>
+                  <MenuItem value="2">Year 2</MenuItem>
+                  <MenuItem value="3">Year 3</MenuItem>
+                </Select>
+              </FormControl>
+
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Weight"
+                  label="Weight (%)"
                   variant="outlined"
                   value={formData.weight}
                   onChange={handleInputChange}
@@ -142,7 +160,7 @@ const CreateYear: React.FC<CreateYearProps> = ({
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Year Credit"
+                  label="Year Credits"
                   variant="outlined"
                   value={formData.credits}
                   onChange={handleInputChange}
