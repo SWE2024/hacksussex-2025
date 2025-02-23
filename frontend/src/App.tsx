@@ -8,6 +8,7 @@ import { Navbar } from "./components/NavBar";
 import { Analytics } from "./pages/Analytics";
 import HomePage from "./pages/Home";
 import ModulePage from "./pages/ModulePage";
+import React, { useState, useEffect } from "react";
 
 function Layout() {
 
@@ -21,6 +22,13 @@ function Layout() {
 }
 
 function App() {
+  const [theme, setTheme] = useState<string>('normal')
+
+    useEffect(() => {
+    // Apply the theme globally
+    document.body.classList.remove('normal-theme', 'deuteranopia-theme', 'tritanopia-theme', 'total-colour-blind-theme');
+    document.body.classList.add(`${theme}-theme`);
+  }, [theme]);
   return (
     <Routes>
 

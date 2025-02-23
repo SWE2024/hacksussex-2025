@@ -1,0 +1,28 @@
+/* Default light theme styles */
+body.normal-theme {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  /* Dark mode styles */
+  body.dark-theme {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+  
+  /* Add other theme specific styles for color blindness here */
+  body.deuteranopia-theme {
+    background-color: #d3f2d6; /* Example for deuteranopia */
+    color: #2e2e2e;
+  }
+  
+  body.tritanopia-theme {
+    background-color: #f2d2d2; /* Example for tritanopia */
+    color: #2e2e2e;
+  }
+  
+  body.total-colour-blind-theme {
+    background-color: #b3b3b3; /* Example for total color blindness */
+    color: #1a1a1a;
+  }
+  
