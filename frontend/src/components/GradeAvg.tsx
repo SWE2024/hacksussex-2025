@@ -13,12 +13,6 @@ interface Module {
   credit: number;
 }
 
-interface Year {
-  year: string;
-  credits: number;
-  weight: number;
-}
-
 const modules: Module[] = [
   { name: "Databases", grade: 60, credit: 20 },
   { name: "Neural Networks", grade: 70, credit: 10 },
@@ -95,6 +89,43 @@ const GradeAvg: React.FC = () => {
     }
   };
 
+  const handleCreateModule = async (formData: FormData) => {  
+    try {
+      // Send a POST request to create a new module
+      const response = await axios.post("/module/create", formData);
+  
+      // Get the success message from the response
+      const successMessage = response.data.detail || "Module added successfully";
+  
+      // Display success message
+      setAlertMessage(successMessage);
+      setAlertType("success");
+  
+    } catch (error: any) {
+      let errorMessage = "Error adding module";
+  
+      // Extract error messages from response
+      if (error.response && error.response.data) {
+        if (typeof error.response.data === "string") {
+          errorMessage = error.response.data;
+        } else if (typeof error.response.data === "object") {
+          if (error.response.data.detail) {
+            errorMessage = error.response.data.detail;
+          } else {
+            errorMessage = Object.entries(error.response.data)
+              .map(([key, value]) => `${key}: ${value}`)
+              .join("\n");
+          }
+        }
+      }
+  
+      // Display error message
+      setAlertMessage(errorMessage);
+      setAlertType("error");
+    }
+  };
+  
+
   return (
     <Box display="flex" flexDirection="column" justifyContent="center" height="60vh" padding={3} borderRadius={5} border={1}>
       <Box display={"flex"} justifyContent={'space-between'}>
@@ -165,7 +196,7 @@ const GradeAvg: React.FC = () => {
       <CreateModule
         open={openCreateModule}
         onClose={() => setOpenCreateModule(false)}
-        onSubmit={() => {}}
+        onSubmit={handleCreateModule}
       />
 
       <CreateYear

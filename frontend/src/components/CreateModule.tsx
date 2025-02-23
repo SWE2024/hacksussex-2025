@@ -18,13 +18,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 interface CreateModuleProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (newModule: Module) => void;
-}
-
-interface Module {
-  module_name: string;
-  credit: number;
-  year: string;
+  onSubmit: (formData: FormData) => void; // Updated to expect FormData
 }
 
 const CreateModule: React.FC<CreateModuleProps> = ({
@@ -32,9 +26,9 @@ const CreateModule: React.FC<CreateModuleProps> = ({
   onClose,
   onSubmit,
 }) => {
-  const [formData, setFormData] = useState<Module>({
+  const [formData, setFormData] = useState({
     module_name: "",
-    credit: 0,
+    credits: 0,
     year: "",
   });
 
@@ -50,12 +44,30 @@ const CreateModule: React.FC<CreateModuleProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    // Create FormData and append values
+    const formDataToSend = new FormData();
+    formDataToSend.append("module_name", formData.module_name);
+    formDataToSend.append("credits", String(formData.credits)); // Convert to string
+    formDataToSend.append("year", formData.year);
+
+    // Optionally, include email from localStorage
+    const email = localStorage.getItem("email");
+    if (email) {
+      formDataToSend.append("email", email);
+    }
+
+    // Call onSubmit with the FormData object
+    onSubmit(formDataToSend);
+
+    // Reset form data after submitting
     setFormData({
-        module_name: "",
-        credit: 0,
-        year: "",
+      module_name: "",
+      credits: 0,
+      year: "",
     });
+
+    // Close the drawer
     onClose();
   };
 
@@ -110,25 +122,32 @@ const CreateModule: React.FC<CreateModuleProps> = ({
                   required
                 />
               </Grid>
+
+              {/* Year Selection Dropdown */}
               <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Year"
-                  variant="outlined"
-                  value={formData.year}
-                  onChange={handleInputChange}
-                  name="year"
-                  required
-                />
+                <FormControl fullWidth>
+                  <InputLabel>Year</InputLabel>
+                  <Select
+                    value={formData.year}
+                    onChange={handleInputChange}
+                    name="year"
+                    required
+                  >
+                    <MenuItem value="Year 1">Year 1</MenuItem>
+                    <MenuItem value="Year 2">Year 2</MenuItem>
+                    <MenuItem value="Year 3">Year 3</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
+
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   label="Module Credit"
                   variant="outlined"
-                  value={formData.credit}
+                  value={formData.credits}
                   onChange={handleInputChange}
-                  name="credit"
+                  name="credits"
                   type="number"
                   inputProps={{ min: 0 }}
                   required

@@ -9,6 +9,7 @@ from startup import init
 from typing import Annotated, Union
 from routes.auth import router as auth_routes
 from routes.year import router as year_routes
+from routes.module import router as module_routes
 
 import database
 
@@ -48,3 +49,4 @@ def root():
 # add custom file routes
 app.include_router(auth_routes)
 app.include_router(year_routes)
+app.include_router(module_routes)
